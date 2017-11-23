@@ -1,13 +1,13 @@
 // Initialize Firebase
 var config = {
-	apiKey: "AIzaSyApCZANinnru-gKDVNacC9nm35ynKKQGTs",
-	authDomain: "we-re-so-hungry.firebaseapp.com",
-	databaseURL: "https://we-re-so-hungry.firebaseio.com",
-	projectId: "we-re-so-hungry",
-	storageBucket: "we-re-so-hungry.appspot.com",
-	messagingSenderId: "146172848851"
-};
-firebase.initializeApp(config);
+    apiKey: "AIzaSyBOUnOCMk-OVzfRNAGGffe_upfyM443EvE",
+    authDomain: "testingproject-59567.firebaseapp.com",
+    databaseURL: "https://testingproject-59567.firebaseio.com",
+    projectId: "testingproject-59567",
+    storageBucket: "testingproject-59567.appspot.com",
+    messagingSenderId: "812858389604"
+  };
+  firebase.initializeApp(config);
 
 //  Assign the reference to the database to a variable named 'database'
 var database2 = firebase.database();
@@ -18,8 +18,9 @@ var database2 = firebase.database();
 // Performs the Reciepe lookup
 function edamamAPI(newIngredients){
 
-	var applicationID = "ee864bfc";
-	var receipeSearchAPIKey = "bd4299ab0500d03db078800ad8bbd068";
+	// using RecipeSearchPersonal API keys
+	var applicationID = "4c38c5d9";
+	var receipeSearchAPIKey = "7102b361cedbabe0c67b44784a2b24d7";
 	var ingredientQuery = newIngredients;
 
 	// Dynamicaly build the ingredientQuery by grabbing all ingredients
@@ -43,9 +44,28 @@ function edamamAPI(newIngredients){
 		.done(function(response){
 			console.log(response);
 			//shortcut for response.hits
-			var results = response.hits
+			// Limit of the number of result to be displayed.  
+			var maxResultsToDisplay = 9;
+			var displayCount = 0;
+			
+			var results = response.hits;
+			// Limits the number of results to be displayed at one time
+			if (results.length > maxResultsToDisplay)
+			{
+				displayCount = maxResultsToDisplay;
+			}
+			else if(results.length === 0){
+				// To many Ingredients, no results.
+				// What to do in this case?
+							}
+			else{
+				displayCount = results.length;
+			}
 
-			for (let i = 0; i < results.length; i++) {
+			// Clear out old recipe cards results before entering the for loop
+			$("#recipesDiv").html('');
+
+			for (let i = 0; i < displayCount; i++) {
 
                     
                     //creating and sorting a div tag
@@ -67,24 +87,72 @@ function edamamAPI(newIngredients){
                     // recipes.append(servingSize);
                     // recipes.append(recipeImage);
                     // console.log(recipes);
-                    // $("#recipesDiv").prepend(recipes);
+					// $("#recipesDiv").prepend(recipes);
+					
 
+					var cardColumn = $("<col>");
+					cardColumn.addClass("col s4 m4");
 
-                    var html = '';
+					var cardDiv =  $("<div>");
+					cardDiv.addClass("card");
 
-                    //html += '<div class="row">';
-                    html += '<div class="col s4 m4">';
-                    html += '<div class="card">';
-                    html += '<div class="card-image">';
-                    html += '<img src="' + results[i].recipe.image + '">';
+					var cardImageDiv = $("<div>");
+					cardImageDiv.addClass("card-image");
+
+					var cardImage = $("<img>");
+					cardImage.attr("src", results[i].recipe.image);
+					
+					var cardTitleSpan = $("<span>");
+					cardTitleSpan.addClass("card-title");
+					cardTitleSpan.text(results[i].recipe.label);
+
+					var cardContentDiv = $("<div>");
+					cardContentDiv.addClass("card-content");
+
+					var caloriesParagraph = $("<p>");
+					caloriesParagraph.text('Calories: ' + parseInt(results[i].recipe.calories));
+
+					var yieldsParagraph = $("<p>");
+					yieldsParagraph.text('Yields: ' + results[i].recipe.yield + ' Servings');
+
+					
+					// DESPERATION METHOD of BUILDING CARDS (Fix so Dan will stop laughing at us)
+					// var html = '';
+
+                    // //html += '<div class="row">';
+                    // html += '<div class="col s4 m4">';
+                    // html += '<div class="card">';
+                    // html += '<div class="card-image">';
+                    // html += '<img src="' + results[i].recipe.image + '">';
                     
-                    html += '<div class="card-content">';
-                    html += '<p>' + results[i].recipe.label + '</p>';
-                    html += '<p>Calories ' +  parseInt(results[i].recipe.calories) + '</p>';
-                    html += '<p>Yields ' + results[i].recipe.yield + " Servings </p>"
-                    html += '</div></div></div>'
+                    // html += '<div class="card-content">';
+                    // html += '<p>' + results[i].recipe.label + '</p>';
+                    // html += '<p>Calories ' +  parseInt(results[i].recipe.calories) + '</p>';
+                    // html += '<p>Yields ' + results[i].recipe.yield + " Servings </p>"
+                    // html += '</div></div></div>'
 
-                    $("#recipesDiv").prepend(html);
+					// Append the divs correctly so the child elements are correct.  To make jQuery not close DIVs early,  need to build the children first (backwards?) then append to Parent DIV.
+
+					//build card image div
+					cardImageDiv.append(cardImage, cardTitleSpan)
+
+					//build Card Content Div
+					cardContentDiv.append(caloriesParagraph, yieldsParagraph);
+
+					//build cardDiv
+					cardDiv.append(cardImageDiv, cardContentDiv);
+
+					//finally build column
+					cardColumn.append(cardDiv);
+
+					if(displayCount === 0){
+						var noResults = $("<p>");
+						noResults.text("No Results, reset!");
+
+					}
+
+					// Add new cards
+                    $("#recipesDiv").prepend(cardColumn);
 
 
 

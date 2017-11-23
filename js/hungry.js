@@ -10,14 +10,14 @@ var nameProvided = '';
 
 // Initialize Firebase
 var config = {
-	apiKey: "AIzaSyApCZANinnru-gKDVNacC9nm35ynKKQGTs",
-	authDomain: "we-re-so-hungry.firebaseapp.com",
-	databaseURL: "https://we-re-so-hungry.firebaseio.com",
-	projectId: "we-re-so-hungry",
-	storageBucket: "we-re-so-hungry.appspot.com",
-	messagingSenderId: "146172848851"
-};
-firebase.initializeApp(config);
+    apiKey: "AIzaSyBOUnOCMk-OVzfRNAGGffe_upfyM443EvE",
+    authDomain: "testingproject-59567.firebaseapp.com",
+    databaseURL: "https://testingproject-59567.firebaseio.com",
+    projectId: "testingproject-59567",
+    storageBucket: "testingproject-59567.appspot.com",
+    messagingSenderId: "812858389604"
+  };
+  firebase.initializeApp(config);
 
 //  Assign the reference to the database to a variable named 'database'
 var database = firebase.database();
